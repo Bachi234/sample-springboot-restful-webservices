@@ -9,6 +9,8 @@ import net.schalegroup.springboot.service.UserService;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 //implements UserService interface = impl
 //Spring 4.3 onwards, whenever there is a Spring Bean, it has a single parametrized constructor which allows to omit @Autowired
 @Service
@@ -32,17 +34,19 @@ public class UserServiceImpl implements UserService {
         return UserMapper.mapToUserDTO(user); //convert User entity(JPA) into UserDTO
     }
     @Override
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepo.findAll();
+        return users.stream().map(UserMapper::mapToUserDTO)
+                .collect(Collectors.toList());
     }
     @Override
-    public User updateUser(User user) {
+    public UserDTO updateUser(UserDTO user) {
         User existingUser = userRepo.findById(user.getId()).get();
         existingUser.setFName(user.getFName());
         existingUser.setLName(user.getLName());
         existingUser.setEmail(user.getEmail());
         User updatedUser = userRepo.save(existingUser);
-        return updatedUser;
+        return UserMapper.mapToUserDTO(updatedUser);
     }
     @Override
     public void deleteUser(Long userId){

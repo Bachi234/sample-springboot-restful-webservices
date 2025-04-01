@@ -34,17 +34,17 @@ public class UserController {
     //build get ALL user REST API
     //http://localhost:8080/api/users
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUsers();
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
     //build UPDATE USER REST API
     //http://localhost:8080/api/users/1
     @PutMapping("{id}")//to map put request onto specific handler method
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long userId,
-                                           @RequestBody User user){ //RequestBody is for JSON User into Java Object
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long userId,
+                                           @RequestBody UserDTO user){ //RequestBody is for JSON User into Java Object
         user.setId(userId);
-        User updatedUser = userService.updateUser(user);
+        UserDTO updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser,HttpStatus.OK);
     }
     //build DELETE USER REST API
