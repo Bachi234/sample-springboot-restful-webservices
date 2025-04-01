@@ -1,14 +1,12 @@
 package net.schalegroup.springboot.controller;
 import lombok.AllArgsConstructor;
-import net.schalegroup.springboot.DTO.userDTO;
+import net.schalegroup.springboot.DTO.UserDTO;
 import net.schalegroup.springboot.entity.User;
 import net.schalegroup.springboot.service.UserService;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
 //build create User REST API
 //RequestBody will convert JSON into User Java Object
 //entity = papunta lang sa db yung purpose
@@ -22,23 +20,23 @@ import java.util.List;
 public class UserController {
     private UserService userService;
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody userDTO userDTO) {
-        User savedUser = userService.createUser(userDTO);
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
+        UserDTO savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
     //build get user by REST API
     //http://localhost:8080/api/users/1
     @GetMapping("{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
-        User user = userService.getUserById(userId);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId) {
+        UserDTO user = userService.getUserById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
     //build get ALL user REST API
     //http://localhost:8080/api/users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
-       List<User> users = userService.getAllUsers();
-       return new ResponseEntity<>(users,HttpStatus.OK);
+        List<User> users = userService.getAllUsers();
+        return new ResponseEntity<>(users,HttpStatus.OK);
     }
     //build UPDATE USER REST API
     //http://localhost:8080/api/users/1
@@ -57,9 +55,6 @@ public class UserController {
         return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
     }
 }
-//    public ResponseEntity<User> getUserById(@PathVariable ("id") Long userId) {
-//        User user = userService.getUserById(userId);
-//        return new ResponseEntity<>(user, HttpStatus.OK);
-//    }
+
 
 

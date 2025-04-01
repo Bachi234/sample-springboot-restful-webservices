@@ -1,23 +1,25 @@
 package net.schalegroup.springboot.entity;
 import jakarta.persistence.*;
-import lombok.*;
-//JPA provides four primary key generations: auto, identity, table and sequence
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
-//getting values directly from db
-@Data
-@Entity //specifies that the class is a JPA entity.
-@Table (name = "users")
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "users")
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//this identity is the primary generation strategy internal uses db provided auto-increment to incre the primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "f_name", nullable = false)
+    @Column(nullable = false)
     private String fName;
-    @Column(name = "l_name", nullable = false)
+    @Column(nullable = false)
     private String lName;
-    @Column(name = "email",unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 }
