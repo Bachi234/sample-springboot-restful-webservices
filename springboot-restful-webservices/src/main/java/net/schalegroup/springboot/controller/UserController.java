@@ -2,10 +2,15 @@ package net.schalegroup.springboot.controller;
 import lombok.AllArgsConstructor;
 import net.schalegroup.springboot.DTO.UserDTO;
 import net.schalegroup.springboot.entity.User;
+import net.schalegroup.springboot.exception.ErrorDetails;
+import net.schalegroup.springboot.exception.ResourceNotFoundException;
 import net.schalegroup.springboot.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
 import java.util.List;
 //build create User REST API
 //RequestBody will convert JSON into User Java Object
@@ -17,7 +22,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/users")
-public class UserController {
+public class  UserController {
     private UserService userService;
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
@@ -54,6 +59,17 @@ public class UserController {
         userService.deleteUser(userId);
         return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
     }
+//    @ExceptionHandler(ResourceNotFoundException.class)//used to handle specific exceptions and send a custom response to client
+//    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception,
+//                                                                        WebRequest webRequest){
+//        ErrorDetails errorDetails = new ErrorDetails(
+//                LocalDateTime.now(),
+//                exception.getMessage(),
+//                webRequest.getDescription(false),
+//                "USER_NOT_FOUND"
+//        );
+//        return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
+//    }
 }
 
 

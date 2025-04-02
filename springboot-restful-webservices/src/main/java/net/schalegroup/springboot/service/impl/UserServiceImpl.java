@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.schalegroup.springboot.DTO.UserDTO;
 import net.schalegroup.springboot.entity.User;
 //import net.schalegroup.springboot.mapper.UserMapper;
+import net.schalegroup.springboot.exception.EmailAlreadyExistsException;
+import net.schalegroup.springboot.exception.ResourceNotFoundException;
 import net.schalegroup.springboot.mapper.AutoUserMapper;
 import net.schalegroup.springboot.repository.UserRepo;
 import net.schalegroup.springboot.service.UserService;
@@ -26,8 +28,13 @@ public class UserServiceImpl implements UserService {
         // Convert UserDto into User JPA Entity
         //User user = UserMapper.mapToUser(userDTO);
         //User user = modelMapper.map(userDTO,User.class);
+        Optional<User> optionalUser = userRepo.findByEmail(userDTO.getEmail());
+        if(optionalUser.isPresent()){
+            throw new EmailAlreadyExistsException("Void. Email already existing.");
+        }
         User user = AutoUserMapper.MAPPER.mapToUser(userDTO);
         User savedUser = userRepo.save(user);
+        //Convert JPA to DTO
         //UserDTO savedUserDTO = UserMapper.mapToUserDTO(savedUser);
         //UserDTO savedUserDTO = modelMapper.map(savedUser,UserDTO.class);
         UserDTO savedUserDTO = AutoUserMapper.MAPPER.mapToUserDTO(savedUser);
@@ -35,11 +42,13 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserDTO getUserById(Long userId) {
-        Optional<User> optionalUser = userRepo.findById(userId);
-        User user =  optionalUser.get();
+        User user = userRepo.findById(userId).orElseThrow(//expect supplier functional interface implementation lambda to implement supplier func interface
+                () -> new ResourceNotFoundException("User","id",userId)//goes here when id is not found in the database
+        );
+        //User user =  optionalUser.get();
         //return UserMapper.mapToUserDTO(user); //convert User entity(JPA) into UserDTO
         //return modelMapper.map(user,UserDTO.class);
-        return AutoUserMapper.MAPPER.mapToUserDTO(optionalUser.get());
+        return AutoUserMapper.MAPPER.mapToUserDTO(user);
     }
     @Override
     public List<UserDTO> getAllUsers() {
@@ -53,7 +62,9 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserDTO updateUser(UserDTO user) {
-        User existingUser = userRepo.findById(user.getId()).get();
+        User existingUser = userRepo.findById(user.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", user.getId())
+        );
         existingUser.setFName(user.getFName());
         existingUser.setLName(user.getLName());
         existingUser.setEmail(user.getEmail());
@@ -64,6 +75,9 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public void deleteUser(Long userId){
+        User existingUser = userRepo.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", userId)
+        );
         userRepo.deleteById(userId);
     }
 }
