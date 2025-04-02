@@ -1,4 +1,5 @@
 package net.schalegroup.springboot.controller;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import net.schalegroup.springboot.DTO.UserDTO;
 import net.schalegroup.springboot.entity.User;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-
 import java.time.LocalDateTime;
 import java.util.List;
 //build create User REST API
@@ -25,7 +25,7 @@ import java.util.List;
 public class  UserController {
     private UserService userService;
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO user) {
         UserDTO savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
@@ -47,7 +47,7 @@ public class  UserController {
     //http://localhost:8080/api/users/1
     @PutMapping("{id}")//to map put request onto specific handler method
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long userId,
-                                           @RequestBody UserDTO user){ //RequestBody is for JSON User into Java Object
+                                           @RequestBody @Valid UserDTO user){ //RequestBody is for JSON User into Java Object
         user.setId(userId);
         UserDTO updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser,HttpStatus.OK);
